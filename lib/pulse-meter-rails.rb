@@ -2,6 +2,8 @@ require "active_support"
 require "active_support/all"
 require "pulse-meter"
 
+require "pulse_toolbox/sensor/initializer"
+
 module PulseToolbox
   extend ActiveSupport::Autoload
 
@@ -9,6 +11,11 @@ module PulseToolbox
   module Server
     extend ActiveSupport::Autoload
     autoload :Monitoring
+  end
+
+  module Sensor
+    extend ActiveSupport::Autoload
+    autoload :Manager
   end
 
   def self.redis=(redis)

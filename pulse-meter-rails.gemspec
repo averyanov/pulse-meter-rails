@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency('pulse-meter')
   gem.add_runtime_dependency('activesupport', '>= 3.0')
+  gem.add_runtime_dependency('rails', '>= 3.0')
 
   gem.add_development_dependency('rake')
   gem.add_development_dependency('redcarpet')
