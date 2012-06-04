@@ -21,4 +21,8 @@ module PulseToolbox
   def self.redis=(redis)
     PulseMeter.redis = redis
   end
+
+  def self.redis
+    PulseMeter.redis
+  end
 end
