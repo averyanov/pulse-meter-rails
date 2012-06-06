@@ -24,9 +24,9 @@ module PulseToolbox::Server
 
           p.spline "Max times" do |w|
 
-            w.sensor :max_db_time, color: '#FF0000'
-            w.sensor :max_view_time, color: '#00FF00'
-            w.sensor :max_total_time, color: '#0000FF'
+            PulseToolbox::Sensor::Manager.each_sensor_named_with(:max) do |s|
+              w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
+            end
 
             w.timespan 60 * 60 * 3
             w.redraw_interval 10
@@ -38,9 +38,9 @@ module PulseToolbox::Server
 
           p.spline "95% percentile times" do |w|
 
-            w.sensor :p95_db_time, color: '#FF0000'
-            w.sensor :p95_view_time, color: '#00FF00'
-            w.sensor :p95_total_time, color: '#0000FF'
+            PulseToolbox::Sensor::Manager.each_sensor_named_with(:p95) do |s|
+              w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
+            end
 
             w.timespan 60 * 60 * 3
             w.redraw_interval 10
