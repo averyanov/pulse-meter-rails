@@ -1,0 +1,1 @@
+PulseToolbox.redis = Redis.new
