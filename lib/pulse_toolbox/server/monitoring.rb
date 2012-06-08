@@ -21,34 +21,22 @@ module PulseToolbox::Server
         })
 
         l.page "Requests" do |p|
+          
+          PulseToolbox::Sensor::Manager.each_group_with_title do |group, title|
+            p.spline title do |w|
+              PulseToolbox::Sensor::Manager.each_sensor_in_group(group) do |s|
+                w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
+              end
 
-          p.spline "Max times" do |w|
+              w.timespan 60 * 60 * 3
+              w.redraw_interval 10
 
-            PulseToolbox::Sensor::Manager.each_sensor_named_with(:max) do |s|
-              w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
+              w.show_last_point true
+              w.values_label "Time"
+              w.width 10
             end
-
-            w.timespan 60 * 60 * 3
-            w.redraw_interval 10
-
-            w.show_last_point true
-            w.values_label "Time"
-            w.width 10
           end
 
-          p.spline "95% percentile times" do |w|
-
-            PulseToolbox::Sensor::Manager.each_sensor_named_with(:p95) do |s|
-              w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
-            end
-
-            w.timespan 60 * 60 * 3
-            w.redraw_interval 10
-
-            w.show_last_point true
-            w.values_label "Time"
-            w.width 10
-          end
           p.highchart_options({
             tooltip: {
               value_decimals: 0

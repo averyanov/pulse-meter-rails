@@ -19,10 +19,7 @@ describe "/monitoring/pages/:id/widgets" do
   end
 
   it "contains all sensors from PulseToolbox::Sensor::Manager config" do
-    annotations = [] 
-    PulseToolbox::Sensor::Manager.each_sensor_named_with do |s|
-      annotations << s.annotation
-    end
+    annotations = PulseToolbox::Sensor::Manager.sensors.map(&:annotation) 
 
     found_annotations = []
     @widgets.each do |w|

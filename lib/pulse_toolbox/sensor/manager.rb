@@ -3,7 +3,7 @@ module PulseToolbox
     class Manager
       class_attribute :default_options
       class_attribute :sensors_config
-      class_attribute :sensors
+      class_attribute :configurator
 
       self.default_options = {
         :ttl => 1.day,
@@ -13,82 +13,136 @@ module PulseToolbox
       }.freeze
 
       self.sensors_config = {
-        :max_db_time => {
-          :sensor_type => 'timelined/max',
-          :color => '#0000FF',
-          :args => {
-            :annotation => "Max DB time"
-          }.merge(self.default_options)
+        :max => {
+          :title => "Max times",
+          :sensors => {
+            :db_time => {
+              :sensor_type => 'timelined/max',
+              :color => '#0000FF',
+              :args => {
+                :annotation => "Max DB time"
+              }
+            },
+            :view_time => {
+              :sensor_type => 'timelined/max',
+              :color => '#00FF00',
+              :args => {
+                :annotation => "Max View time"
+              }
+            },
+            :total_time => {
+              :sensor_type => 'timelined/max',
+              :color => '#FF0000',
+              :args => {
+                :annotation => "Max total time"
+              }
+            }
+          }
         },
-        :max_view_time => {
-          :sensor_type => 'timelined/max',
-          :color => '#00FF00',
-          :args => {
-            :annotation => "Max View time"
-          }.merge(self.default_options)
-        },
-        :max_total_time => {
-          :sensor_type => 'timelined/max',
-          :color => '#FF0000',
-          :args => {
-            :annotation => "Max total time"
-          }.merge(self.default_options)
-        },
-        :p95_db_time => {
-          :sensor_type => 'timelined/percentile',
-          :color => '#0000FF',
-          :args => {
-            :annotation => "95% percentile of DB time",
-            :p => 0.95
-          }.merge(self.default_options)
-        },
-        :p95_view_time => {
-          :sensor_type => 'timelined/percentile',
-          :color => '#00FF00',
-          :args => {
-            :annotation => "95% percentile of View time",
-            :p => 0.95
-          }.merge(self.default_options)
-        },
-        :p95_total_time => {
-          :sensor_type => 'timelined/percentile',
-          :color => '#FF0000',
-          :args => {
-            :annotation => "95% percentile of Total time",
-            :p => 0.95
-          }.merge(self.default_options)
+        :p95 => {
+          :title => "95% percentile times",
+          :sensors => {
+            :db_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#0000FF',
+              :args => {
+                :annotation => "95% percentile of DB time",
+                :p => 0.95
+              }
+            },
+            :view_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#00FF00',
+              :args => {
+                :annotation => "95% percentile of View time",
+                :p => 0.95
+              }
+            },
+            :total_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#FF0000',
+              :args => {
+                :annotation => "95% percentile of Total time",
+                :p => 0.95
+              }
+            }
+          }
         }
       }
 
       def self.create_sensors
-        self.sensors = PulseMeter::Sensor::Configuration.new(sensors_config)
+        self.configurator = PulseMeter::Sensor::Configuration.new(cfg)
       end
 
-      def self.log_request(total_time, view_time, db_time)
-        [
-          [:max_db_time, db_time],
-          [:p95_db_time, db_time],
-          [:max_view_time, view_time],
-          [:p95_view_time, view_time],
-          [:max_total_time, total_time],
-          [:p95_total_time, total_time]
-        ].each {|name, value = e| event(name, value)}
-      end
-
-      def self.event(sensor, value)
-        sensors.sensor(sensor).event(value.to_i)
-      end
-
-      def self.each_sensor_named_with(prefix = '')
-        names = sensors_config.keys.select {|k| k =~ /^#{prefix}/}
-        names.each do |name|
-          sensor = sensors.sensor(name)
-          yield(sensor)
+      class << self
+        def log_request(total_time, view_time, db_time)
+          [
+            [:max_db_time, db_time],
+            [:p95_db_time, db_time],
+            [:max_view_time, view_time],
+            [:p95_view_time, view_time],
+            [:max_total_time, total_time],
+            [:p95_total_time, total_time]
+          ].each {|name, value = e| event(name, value)}
         end
-      end
 
-      def self.color(sensor)
-        sensors_config[sensor.name.to_sym][:color]
+        def event(sensor, value)
+          configurator.sensor(sensor).event(value.to_i)
+        end
+
+        def cfg
+          cfg = {}
+          each_group do |group|
+            sensors_config[group][:sensors].each_pair do |key, params|
+              name = name_in_group(group, key)
+              full_args = default_options.merge(params[:args])
+              params[:args] = default_options.merge(params[:args])
+              cfg[name] = params
+            end
+          end
+          cfg
+        end
+
+        def each_sensor_in_group(group)
+          sensors_config[group][:sensors].each_key do |name|
+            sensor = configurator.sensor(name_in_group(group, name))
+            yield(sensor)
+          end
+        end
+
+        def each_group
+          sensors_config.each_key do |group|
+            yield(group)
+          end
+        end
+
+        def each_group_with_title
+          sensors_config.each_key do |group|
+            yield(group, sensors_config[group][:title] || group)
+          end
+        end
+
+        def each_sensor
+          each_group do |group|
+            each_sensor_in_group(group) do |sensor|
+              yield(sensor)
+            end
+          end
+        end
+
+        def sensors
+          list = []
+          each_sensor {|s| list << s}
+          list
+        end
+            
+        def name_in_group(group, sensor_name)
+          "#{group}_#{sensor_name}".to_sym
+        end
+
+        def color(sensor)
+          return '#0000FF'
+        end
       end
     end
   end
