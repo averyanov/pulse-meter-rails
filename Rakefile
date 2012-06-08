@@ -10,6 +10,8 @@ YARD::Rake::YardocTask.new(:yard)
 
 ROOT = File.dirname(__FILE__)
 
+task :default => :spec
+
 namespace :yard do
   desc "Open doc index in a browser"
   task :open do
