@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/averyanov/pulse-meter-rails.png)](http://travis-ci.org/averyanov/pulse-meter-rails)
+
 # PulseToolbox
 Pulse toolbox provides various metrics for your Rails application out of box.
 It is based on [pulse-meter](https://github.com/savonarola/pulse-meter) gem.
