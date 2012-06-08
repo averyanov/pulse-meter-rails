@@ -1,6 +1,13 @@
-# Pulse::Meter::Rails
+# PulseToolbox
+Pulse toolbox provides various metrics for your Rails application out of box.
+It is based on [pulse-meter](https://github.com/savonarola/pulse-meter) gem.
 
-TODO: Write a gem description
+Beeing added to Gemfile Pulse Toolbox allows you to mount monitoring page in 
+your <tt>routes.rb</tt> file.
+
+Requests processing times will be displayed there. You can also add custom
+sensors to configuration to be displayed.
+
 
 ## Installation
 
@@ -25,9 +32,11 @@ Create an initializer with the following config
       username == 'admin'
     end
 
-And mount monitoring server in your <tt>router.rb</tt>
+And mount monitoring server in your <tt>routes.rb</tt>
 
     mount PulseToolbox::Server::Monitoring, :at => "/monitoring"
+
+Launch your application and visit <tt>/monitoring</tt>
 
 ## Contributing
 
