@@ -16,6 +16,10 @@ module PulseToolbox
   module Sensor
     extend ActiveSupport::Autoload
     autoload :Manager
+    module Mixins
+      extend ActiveSupport::Autoload
+      autoload :Iterators
+    end
   end
 
   def self.redis=(redis)

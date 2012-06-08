@@ -1,6 +1,7 @@
 module PulseToolbox
   module Sensor
     class Manager
+      extend PulseToolbox::Sensor::Mixins::Iterators
       class_attribute :default_options
       class_attribute :sensors_config
       class_attribute :configurator
@@ -103,46 +104,24 @@ module PulseToolbox
           cfg
         end
 
-        def each_sensor_in_group(group)
-          sensors_config[group][:sensors].each_key do |name|
-            sensor = configurator.sensor(name_in_group(group, name))
-            yield(sensor)
-          end
-        end
-
-        def each_group
-          sensors_config.each_key do |group|
-            yield(group)
-          end
-        end
-
-        def each_group_with_title
-          sensors_config.each_key do |group|
-            yield(group, sensors_config[group][:title] || group)
-          end
-        end
-
-        def each_sensor
-          each_group do |group|
-            each_sensor_in_group(group) do |sensor|
-              yield(sensor)
-            end
-          end
-        end
-
         def sensors
           list = []
           each_sensor {|s| list << s}
           list
         end
             
+        def color(sensor)
+          return '#0000FF'
+        end
+
         def name_in_group(group, sensor_name)
           "#{group}_#{sensor_name}".to_sym
         end
 
-        def color(sensor)
-          return '#0000FF'
+        def get_sensor(group, name)
+          configurator.sensor(name_in_group(group, name))
         end
+          
       end
     end
   end
