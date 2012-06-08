@@ -38,6 +38,22 @@ And mount monitoring server in your <tt>routes.rb</tt>
 
     mount PulseToolbox::Server::Monitoring, :at => "/monitoring"
 
+You can add your own groups of sensors to page in initializer:
+    
+    group = PulseToolbox::Sensor::Manager.add_group(:min)
+    PulseToolbox::Sensor::Manager.add_sensor(group, :user_age, {
+        :sensor_type => 'timelined/min',
+        :color => '#0000FF',
+        :args => {
+          :ttl => 10.days,
+          :interval => 10.minutes,
+          :raw_data_ttl => 10.hours,
+          :reduce_delay => 2.minutes,
+          :annotation => "User ages"
+        }
+      }
+    })
+    
 Launch your application and visit <tt>/monitoring</tt>
 
 ## Contributing
