@@ -25,7 +25,7 @@ module PulseToolbox::Server
           PulseToolbox::Sensor::Manager.each_group_with_title do |group, title|
             p.spline title do |w|
               PulseToolbox::Sensor::Manager.each_sensor_in_group(group) do |s|
-                w.sensor s.name, :color => PulseToolbox::Sensor::Manager.color(s)
+                w.sensor s.name, :color => s.color
               end
 
               w.timespan 60 * 60 * 3

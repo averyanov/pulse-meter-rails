@@ -14,8 +14,10 @@ describe "/monitoring/pages/:id/widgets" do
     @widgets = JSON.parse(page.source)
   end
 
-  it "returns two groups of widgets" do
-    @widgets.count.should == 2
+  it "returns some groups of widgets" do
+    groups = []
+    PulseToolbox::Sensor::Manager.each_group {|g| groups << g}
+    @widgets.count.should == groups.count
   end
 
   it "contains all sensors from PulseToolbox::Sensor::Manager config" do

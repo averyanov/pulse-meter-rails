@@ -1,3 +1,11 @@
+module PulseMeter
+  module Sensor
+    class Base
+      attr_accessor :color
+    end
+  end
+end
+
 module PulseToolbox
   module Sensor
     class Manager
@@ -72,7 +80,11 @@ module PulseToolbox
       }
 
       def self.create_sensors
+        config = cfg
         self.configurator = PulseMeter::Sensor::Configuration.new(cfg)
+        each_sensor do |s|
+          s.color = config[s.name.to_sym][:color]
+        end
       end
 
       class << self
@@ -91,6 +103,23 @@ module PulseToolbox
           configurator.sensor(sensor).event(value.to_i)
         end
 
+        def add_group(name, title = nil)
+          name = name.to_sym
+          sensors_config[name] ||= {}
+          sensors_config[name][:title] = title if title
+          sensors_config[name][:sensors] ||= {}
+          return name
+        end
+        
+        def add_sensor(group, name, options)
+          name = name.to_sym
+          g = add_group(group)
+          sensors_config[g][:sensors][name] = options
+          return name_in_group(group, name)
+        end
+        
+      private
+
         def cfg
           cfg = {}
           each_group do |group|
@@ -104,16 +133,6 @@ module PulseToolbox
           cfg
         end
 
-        def sensors
-          list = []
-          each_sensor {|s| list << s}
-          list
-        end
-            
-        def color(sensor)
-          return '#0000FF'
-        end
-
         def name_in_group(group, sensor_name)
           "#{group}_#{sensor_name}".to_sym
         end
@@ -121,7 +140,7 @@ module PulseToolbox
         def get_sensor(group, name)
           configurator.sensor(name_in_group(group, name))
         end
-          
+
       end
     end
   end
