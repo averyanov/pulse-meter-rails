@@ -8,6 +8,12 @@ module PulseToolbox
   extend ActiveSupport::Autoload
 
   autoload :VERSION, 'pulse_toolbox/version'
+
+  module Generators
+    extend ActiveSupport::Autoload
+    autoload :InstallGenerator
+  end
+
   module Server
     extend ActiveSupport::Autoload
     autoload :Monitoring

@@ -38,6 +38,10 @@ And mount monitoring server in your <tt>routes.rb</tt>
 
     mount PulseToolbox::Server::Monitoring, :at => "/monitoring"
 
+Or you can use generator to create initializer and add route:
+    
+    $ bundle exec rails g pulse_toolbox:install
+
 You can add your own groups of sensors to page in initializer:
     
     group = PulseToolbox::Sensor::Manager.add_group(:min)
