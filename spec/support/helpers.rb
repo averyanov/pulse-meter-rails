@@ -21,7 +21,7 @@ module Helpers
 
   def when_i_have_rails_app
     FileUtils.mkdir_p("tmp")
-    FileUtils.remove_dir(RAILS_APP_PATH)
+    FileUtils.remove_dir(RAILS_APP_PATH, true)
     system("rails new " + RAILS_APP_PATH + " > /dev/null 2>&1").should be_true
     system("ln -s ../../../lib/generators " + RAILS_APP_PATH + "/lib/generators").should be_true
   end
