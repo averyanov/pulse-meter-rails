@@ -14,7 +14,10 @@ SimpleCov.start
 require 'rack/test'
 require 'pulse-meter-rails'
 
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+
 RSpec.configure do |config|
+  config.include Helpers
   config.before(:each) do
     PulseToolbox.redis = Redis.new
     PulseToolbox.redis.flushdb
