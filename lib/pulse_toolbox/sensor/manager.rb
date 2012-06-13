@@ -6,6 +6,8 @@ module PulseMeter
   end
 end
 
+require 'pulse-meter/visualizer'
+
 module PulseToolbox
   module Sensor
     class Manager
@@ -13,6 +15,9 @@ module PulseToolbox
       class_attribute :default_options
       class_attribute :sensors_config
       class_attribute :configurator
+      class_attribute :monitoring_layout
+
+      self.monitoring_layout = PulseMeter::Visualize::DSL::Layout.new
 
       self.default_options = {
         :ttl => 1.day,
@@ -116,6 +121,11 @@ module PulseToolbox
           g = add_group(group)
           sensors_config[g][:sensors][name] = options
           return name_in_group(group, name)
+        end
+
+        def layout
+          yield(monitoring_layout)
+          monitoring_layout
         end
         
       private

@@ -7,7 +7,7 @@ module PulseToolbox::Server
     end
 
     def layout
-      PulseMeter::Visualizer.draw do |l|
+      PulseToolbox::Sensor::Manager.layout do |l|
         l.title "Request processing times"
         l.use_utc false
 
@@ -43,7 +43,7 @@ module PulseToolbox::Server
             }
           })
         end
-      end
+      end.to_layout
     end
   end
 end

@@ -58,6 +58,30 @@ You can add your own groups of sensors to page in initializer:
       }
     })
     
+Default layout can be easily exteneded in initializer by standart pulse-meter [DSL](https://github.com/savonarola/pulse-meter#full-example-with-dsl-explanation)
+    
+    PulseMeter::Sensor::Timelined::Counter.new(:custom_sensor,
+      :ttl => 1.hour,
+      :interval => 1.minute,
+      :raw_data_ttl => 10.minutes,
+      :reduce_delay => 2.minutes
+    )
+
+    PulseToolbox::Sensor::Manager.layout do |l|
+      l.page "Custom" do |p|
+        p.spline "Custom sensor" do |w|
+          w.sensor :custom_sensor, :color => "#0000FF"
+
+          w.timespan 60 * 60 * 3
+          w.redraw_interval 10
+
+          w.show_last_point true
+          w.values_label "Time"
+          w.width 10
+        end
+      end
+    end
+
 Launch your application and visit <tt>/monitoring</tt>
 
 ## Contributing

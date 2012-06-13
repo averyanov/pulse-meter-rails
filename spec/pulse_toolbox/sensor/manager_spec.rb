@@ -125,4 +125,12 @@ describe PulseToolbox::Sensor::Manager do
       end
     end
   end
+
+  describe ".layout" do
+    it "passes layout instance to block" do
+      described_class.layout do |l|
+        l.should be_instance_of(PulseMeter::Visualize::DSL::Layout)
+      end
+    end
+  end
 end
