@@ -34,21 +34,21 @@ module PulseToolbox
               :sensor_type => 'timelined/max',
               :color => '#0000FF',
               :args => {
-                :annotation => "Max DB time"
+                :annotation => "DB"
               }
             },
             :view_time => {
               :sensor_type => 'timelined/max',
               :color => '#00FF00',
               :args => {
-                :annotation => "Max View time"
+                :annotation => "View"
               }
             },
             :total_time => {
               :sensor_type => 'timelined/max',
               :color => '#FF0000',
               :args => {
-                :annotation => "Max total time"
+                :annotation => "Total"
               }
             }
           }
@@ -60,7 +60,7 @@ module PulseToolbox
               :sensor_type => 'timelined/percentile',
               :color => '#0000FF',
               :args => {
-                :annotation => "95% percentile of DB time",
+                :annotation => "DB",
                 :p => 0.95
               }
             },
@@ -68,7 +68,7 @@ module PulseToolbox
               :sensor_type => 'timelined/percentile',
               :color => '#00FF00',
               :args => {
-                :annotation => "95% percentile of View time",
+                :annotation => "View",
                 :p => 0.95
               }
             },
@@ -76,7 +76,7 @@ module PulseToolbox
               :sensor_type => 'timelined/percentile',
               :color => '#FF0000',
               :args => {
-                :annotation => "95% percentile of Total time",
+                :annotation => "Total",
                 :p => 0.95
               }
             }

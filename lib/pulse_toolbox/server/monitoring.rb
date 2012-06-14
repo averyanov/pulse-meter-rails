@@ -8,7 +8,6 @@ module PulseToolbox::Server
 
     def layout
       PulseToolbox::Sensor::Manager.layout do |l|
-        l.title "Request processing times"
         l.use_utc false
 
         l.outlier_color '#FF0000'
