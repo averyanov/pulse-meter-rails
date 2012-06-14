@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "/monitoring" do
   it "looks like correct dashboard" do
     visit "/monitoring"
-    page.body.should match(/Request processing times/)
+    page.body.should match(/Pulse Meter/)
   end
 end
 
