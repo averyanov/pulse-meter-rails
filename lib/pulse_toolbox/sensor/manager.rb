@@ -12,9 +12,17 @@ module PulseToolbox
   module Sensor
     class Manager
       extend PulseToolbox::Sensor::Mixins::Iterators
+      # @!attribute [rw] default_options
+      #   @return [Hash] default sensor options 
       class_attribute :default_options
+      # @!attribute [rw] sensors_config
+      #   @return [Hash] sensors config
       class_attribute :sensors_config
+      # @!attribute [rw] configurator
+      #   @return [PulseMeter::Sensor::Configuration] configurator instance
       class_attribute :configurator
+      # @!attribute [rw] monitoring_layout
+      #   @return [PulseMeter::Visualize::DSL::Layout] layout for monitoring page
       class_attribute :monitoring_layout
 
       self.monitoring_layout = PulseMeter::Visualize::DSL::Layout.new
@@ -84,6 +92,7 @@ module PulseToolbox
         }
       }
 
+      # Creates all sensors from sensors_config
       def self.create_sensors
         config = cfg
         self.configurator = PulseMeter::Sensor::Configuration.new(cfg)
@@ -93,6 +102,10 @@ module PulseToolbox
       end
 
       class << self
+        # Logs rails request timing to various sensors
+        # @param total_time [Float] total request time
+        # @param view_time [Float] view time of request
+        # @param db_time [Float] db time of request
         def log_request(total_time, view_time, db_time)
           [
             [:max_db_time, db_time],
@@ -103,11 +116,17 @@ module PulseToolbox
             [:p95_total_time, total_time]
           ].each {|name, value = e| event(name, value)}
         end
-
+        
+        # Sends value to sensor by name
+        # @param sensor [Symbol] sensor name
+        # @param value [Float] event value
         def event(sensor, value)
           configurator.sensor(sensor).event(value.to_i)
         end
 
+        # Adds group to config
+        # @param name [Symbol] group name
+        # @param title [String] group title
         def add_group(name, title = nil)
           name = name.to_sym
           sensors_config[name] ||= {}
@@ -116,6 +135,10 @@ module PulseToolbox
           return name
         end
         
+        # Adds sensor to group in config
+        # @param group [Symbol] group name
+        # @param name [Symbol] sensor name
+        # @param options [Hash] sensor options
         def add_sensor(group, name, options)
           name = name.to_sym
           g = add_group(group)
@@ -123,6 +146,7 @@ module PulseToolbox
           return name_in_group(group, name)
         end
 
+        # Returns monitoring page layout
         def layout
           yield(monitoring_layout)
           monitoring_layout

@@ -3,18 +3,26 @@ module PulseToolbox
     module Mixins
       module Iterators
 
+        # Executes block for each group
+        # @yieldparam group [Symbol] group name
         def each_group
           sensors_config.each_key do |group|
             yield(group)
           end
         end
 
+        # Executes block for each group
+        # @yieldparam group [Symbol] group name
+        # @yieldparam title [String] group title
         def each_group_with_title
           sensors_config.each_key do |group|
             yield(group, sensors_config[group][:title] || group)
           end
         end
 
+        # Executes block for each sensor in group
+        # @param group [Symbol] group name
+        # @yieldparam sensor [Symbol] sensor name
         def each_sensor_in_group(group)
           sensors_config[group][:sensors].each_key do |name|
             sensor = get_sensor(group, name)
@@ -22,6 +30,8 @@ module PulseToolbox
           end
         end
 
+        # Executes block for each sensor
+        # @yieldparam sensor [Symbol] sensor name
         def each_sensor
           each_group do |group|
             each_sensor_in_group(group) do |sensor|
@@ -29,7 +39,9 @@ module PulseToolbox
             end
           end
         end
-
+        
+        # Returns all sensors from config
+        # @return [Array<Symbol>] sensors list
         def sensors
           list = []
           each_sensor {|s| list << s}

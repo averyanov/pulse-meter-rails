@@ -2,6 +2,8 @@ require 'rails'
 
 module PulseToolbox
   module Sensor
+    # Registeres an initializer which creates sensors and subscribes to
+    # process_action.action_controller notification
     class Initializer < ::Rails::Railtie
       initializer "register_request_sensors", :after => :load_config_initializers do
         if PulseToolbox.redis
