@@ -94,6 +94,7 @@ module PulseToolbox
 
       # Creates all sensors from sensors_config
       def self.create_sensors
+        PulseToolbox.maybe_reconnect
         config = cfg
         self.configurator = PulseMeter::Sensor::Configuration.new(cfg)
         each_sensor do |s|
@@ -121,7 +122,7 @@ module PulseToolbox
         # @param sensor [Symbol] sensor name
         # @param value [Float] event value
         def event(sensor, value)
-          configurator.sensor(sensor).event(value.to_i)
+          lazy_configurator.sensor(sensor).event(value.to_i)
         end
 
         # Adds group to config
@@ -172,7 +173,12 @@ module PulseToolbox
         end
 
         def get_sensor(group, name)
-          configurator.sensor(name_in_group(group, name))
+          lazy_configurator.sensor(name_in_group(group, name))
+        end
+
+        def lazy_configurator
+          create_sensors unless configurator
+          configurator
         end
 
       end

@@ -28,11 +28,39 @@ module PulseToolbox
     end
   end
 
-  def self.redis=(redis)
-    PulseMeter.redis = redis
-  end
+  class << self
+    @@pid = nil
+    @@redis_config = {}
 
-  def self.redis
-    PulseMeter.redis
+    def redis=(redis)
+      PulseMeter.redis = redis
+      @@pid = Process.pid
+      @@redis_config = {
+        :host => redis.client.host,
+        :port => redis.client.port,
+        :db => redis.client.db
+      }
+    end
+
+    def redis
+      reconnect if pid_changed
+      PulseMeter.redis
+    end
+
+    def reconnect
+      PulseMeter.redis = Redis.new(
+        :host => @@redis_config[:host],
+        :port => @@redis_config[:port],
+        :db => @@redis_config[:db]
+      )
+    end
+
+    def maybe_reconnect
+      reconnect if pid_changed
+    end
+
+    def pid_changed
+      @@pid && @@pid != Process.pid
+    end
   end
 end

@@ -27,7 +27,7 @@ module Helpers
   end
 
   def and_run_generator(name)
-    system("cd " + RAILS_APP_PATH + " && rails g #{name}  > /dev/null 2>&1").should be_true
+    system("cd " + RAILS_APP_PATH + " && rails g #{name} > /dev/null 2>&1").should be_true
   end
 
   def i_should_see_route(route)

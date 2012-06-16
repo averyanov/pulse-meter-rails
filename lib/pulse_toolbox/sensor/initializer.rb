@@ -7,7 +7,6 @@ module PulseToolbox
     class Initializer < ::Rails::Railtie
       initializer "register_request_sensors", :after => :load_config_initializers do
         if PulseToolbox.redis
-          PulseToolbox::Sensor::Manager.create_sensors
           ActiveSupport::Notifications.subscribe "process_action.action_controller" do |name, start, finish, id, payload|
             total_time = (finish - start) * 1000
             view_time = payload[:view_runtime]
