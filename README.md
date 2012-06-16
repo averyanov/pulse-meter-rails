@@ -42,6 +42,10 @@ Or you can use generator to create initializer and add route:
     
     $ bundle exec rails g pulse_toolbox:install
 
+Launch your application and visit <tt>/monitoring</tt>
+
+## Extra configuration
+
 You can add your own groups of sensors to page in initializer:
     
     group = PulseToolbox::Sensor::Manager.add_group(:min)
@@ -81,8 +85,6 @@ Default layout can be easily exteneded in initializer by standart pulse-meter [D
         end
       end
     end
-
-Launch your application and visit <tt>/monitoring</tt>
 
 ## Contributing
 
