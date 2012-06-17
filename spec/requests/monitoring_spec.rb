@@ -41,8 +41,20 @@ describe "/monitoring/pages/:id/widgets" do
   end
 
   it "contains all sensors from PulseToolbox::Sensor::Manager config" do
+    PulseToolbox::Sensor::Manager.log_request(3, {
+      :view_runtime => 2,
+      :db_runtime => 1,
+      :action => "foo",
+      :controller => 'BarController',
+      :status => 200,
+    })
     visit_tab(monitoring_tab)
-    annotations = PulseToolbox::Sensor::Manager.sensors.map(&:annotation) 
+    annotations = PulseToolbox::Sensor::Manager.sensors.reject{|s|
+      s.is_a?(PulseMeter::Sensor::Timelined::HashedCounter)
+    }.map(&:annotation)
+
+    annotations << "200"
+    annotations << "BarController#foo"
 
     annotations.sort.should == all_annotations.sort
   end

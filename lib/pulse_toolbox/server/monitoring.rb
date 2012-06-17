@@ -20,8 +20,14 @@ module PulseToolbox::Server
         })
 
         l.page "Requests" do |p|
+
+          p.highchart_options({
+            chart: {
+              height: 300
+            }
+          })
           
-          PulseToolbox::Sensor::Manager.each_group_with_title do |group, title|
+          PulseToolbox::Sensor::Manager.each_group_with_title do |group, title, values_label|
             p.spline title do |w|
               PulseToolbox::Sensor::Manager.each_sensor_in_group(group) do |s|
                 w.sensor s.name, :color => s.color
@@ -31,8 +37,8 @@ module PulseToolbox::Server
               w.redraw_interval 10
 
               w.show_last_point true
-              w.values_label "Time"
-              w.width 10
+              w.values_label values_label
+              w.width 5
             end
           end
 

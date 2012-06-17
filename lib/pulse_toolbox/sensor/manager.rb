@@ -28,7 +28,7 @@ module PulseToolbox
       self.monitoring_layout = PulseMeter::Visualize::DSL::Layout.new
 
       self.default_options = {
-        :ttl => 1.day,
+        :ttl => 7.days,
         :interval => 1.minute,
         :raw_data_ttl => 1.hour,
         :reduce_delay => 2.minutes
@@ -37,6 +37,7 @@ module PulseToolbox
       self.sensors_config = {
         :max => {
           :title => "Max times",
+          :values => "Time, ms",
           :sensors => {
             :db_time => {
               :sensor_type => 'timelined/max',
@@ -63,6 +64,7 @@ module PulseToolbox
         },
         :p95 => {
           :title => "95% percentile times",
+          :values => "Time, ms",
           :sensors => {
             :db_time => {
               :sensor_type => 'timelined/percentile',
@@ -89,6 +91,69 @@ module PulseToolbox
               }
             }
           }
+        },
+        :p99 => {
+          :title => "99% percentile times",
+          :values => "Time, ms",
+          :sensors => {
+            :db_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#0000FF',
+              :args => {
+                :annotation => "DB",
+                :p => 0.99
+              }
+            },
+            :view_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#00FF00',
+              :args => {
+                :annotation => "View",
+                :p => 0.99
+              }
+            },
+            :total_time => {
+              :sensor_type => 'timelined/percentile',
+              :color => '#FF0000',
+              :args => {
+                :annotation => "Total",
+                :p => 0.99
+              }
+            }
+          }
+        },
+        :status => {
+          :title => 'Request count',
+          :values => "Count",
+          :sensors => {
+            :total => {
+              :sensor_type => 'timelined/counter',
+              :color => '#FF0000',
+              :args => {
+                :annotation => "Total",
+              }
+            },
+            :count => {
+              :sensor_type => 'timelined/hashed_counter',
+              :color => '#008800',
+              :args => {
+                :annotation => "Status"
+              }
+            }
+          }
+        },
+        :action => {
+          :title => 'Request count by action',
+          :values => "Count",
+          :sensors => {
+            :count => {
+              :sensor_type => 'timelined/hashed_counter',
+              :color => '#008800',
+              :args => {
+                :annotation => "Action"
+              }
+            }
+          }
         }
       }
 
@@ -107,22 +172,34 @@ module PulseToolbox
         # @param total_time [Float] total request time
         # @param view_time [Float] view time of request
         # @param db_time [Float] db time of request
-        def log_request(total_time, view_time, db_time)
-          [
-            [:max_db_time, db_time],
-            [:p95_db_time, db_time],
-            [:max_view_time, view_time],
-            [:p95_view_time, view_time],
-            [:max_total_time, total_time],
-            [:p95_total_time, total_time]
-          ].each {|name, value = e| event(name, value)}
+        def log_request(total_time, payload)
+          view_time = payload[:view_runtime]
+          db_time = payload[:db_runtime]
+          {
+            :max_db_time => db_time,
+            :max_view_time => view_time,
+            :max_total_time => total_time,
+
+            :p95_db_time => db_time,
+            :p95_view_time => view_time,
+            :p95_total_time => total_time,
+
+            :p99_db_time => db_time,
+            :p99_view_time => view_time,
+            :p99_total_time => total_time,
+
+            :status_count => {payload[:status].to_s => 1},
+            :status_total => 1,
+
+            :action_count => {"#{payload[:controller]}##{payload[:action]}" => 1}
+          }.each_pair {|name, value| event(name, value)}
         end
         
         # Sends value to sensor by name
         # @param sensor [Symbol] sensor name
         # @param value [Float] event value
         def event(sensor, value)
-          lazy_configurator.sensor(sensor).event(value.to_i)
+          lazy_configurator.sensor(sensor).event(value)
         end
 
         # Adds group to config

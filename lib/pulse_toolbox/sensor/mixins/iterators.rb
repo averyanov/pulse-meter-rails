@@ -14,9 +14,11 @@ module PulseToolbox
         # Executes block for each group
         # @yieldparam group [Symbol] group name
         # @yieldparam title [String] group title
+        # @yieldparam value_title [String] group sensor value meaning
         def each_group_with_title
-          sensors_config.each_key do |group|
-            yield(group, sensors_config[group][:title] || group)
+          sensors_config.each_key do |group_name|
+            group = sensors_config[group_name]
+            yield(group_name, group[:title] || group_name,  group[:values] || '')
           end
         end
 

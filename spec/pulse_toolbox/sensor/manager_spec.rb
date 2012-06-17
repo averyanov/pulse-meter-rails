@@ -29,7 +29,13 @@ describe PulseToolbox::Sensor::Manager do
     it "sends event to all created sensors" do
       described_class.create_sensors
       described_class.each_sensor {|s| s.should_receive(:event)}
-      described_class.log_request(3, 2, 1)
+      described_class.log_request(3, {
+        :view_runtime => 2,
+        :db_runtime => 1,
+        :action => "foo",
+        :controller => 'BarController',
+        :status => 200
+      })
     end
   end
 
