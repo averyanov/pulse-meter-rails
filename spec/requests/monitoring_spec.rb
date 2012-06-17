@@ -10,22 +10,26 @@ end
 describe "/monitoring/pages/:id/widgets" do
   let(:custom_tab) {1}
   let(:monitoring_tab) {2}
-  def visit_tab(tab_id)
+
+  before(:each) do
     PulseToolbox::Sensor::Manager.create_sensors
-    custom = PulseMeter::Sensor::Timelined::Counter.new(:custom_sensor,
+    PulseMeter::Sensor::Timelined::Counter.new(:custom_sensor,
       :ttl => 1.hour,
       :interval => 1.minute,
       :raw_data_ttl => 10.minutes,
       :reduce_delay => 2.minutes,
       :annotation => "custom_sensor"
     )
-    visit "/monitoring/pages/#{tab_id}/widgets"
-    @widgets = JSON.parse(page.source)
   end
 
-  def all_annotations
+  def widgets_on_tab(tab_id)
+    visit "/monitoring/pages/#{tab_id}/widgets"
+    JSON.parse(page.source)
+  end
+
+  def sensor_names_on_tab(tab_id)
     found_annotations = []
-    @widgets.each do |w|
+    widgets_on_tab(tab_id).each do |w|
       w["series"].each do |s|
         found_annotations << s["name"]
       end
@@ -34,10 +38,9 @@ describe "/monitoring/pages/:id/widgets" do
   end
 
   it "returns some groups of widgets" do
-    visit_tab(monitoring_tab)
     groups = []
     PulseToolbox::Sensor::Manager.each_group {|g| groups << g}
-    @widgets.count.should == groups.count
+    widgets_on_tab(monitoring_tab).count.should == groups.count
   end
 
   it "contains all sensors from PulseToolbox::Sensor::Manager config" do
@@ -48,19 +51,18 @@ describe "/monitoring/pages/:id/widgets" do
       :controller => 'BarController',
       :status => 200,
     })
-    visit_tab(monitoring_tab)
+
     annotations = PulseToolbox::Sensor::Manager.sensors.reject{|s|
       s.is_a?(PulseMeter::Sensor::Timelined::HashedCounter)
     }.map(&:annotation)
 
-    annotations << "200"
-    annotations << "BarController#foo"
+    annotations << "Status: 200"
+    annotations << "Action: BarController#foo"
 
-    annotations.sort.should == all_annotations.sort
+    sensor_names_on_tab(monitoring_tab).sort.should == annotations.sort
   end
 
   it "returns widgets of custom page created in initializer" do
-    visit_tab(custom_tab)
-    all_annotations.should == ["custom_sensor"]
+    sensor_names_on_tab(custom_tab).should == ["custom_sensor"]
   end
 end
