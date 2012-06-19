@@ -175,24 +175,28 @@ module PulseToolbox
         def log_request(total_time, payload)
           view_time = payload[:view_runtime]
           db_time = payload[:db_runtime]
-          {
-            max_db_time: db_time,
-            max_view_time: view_time,
-            max_total_time: total_time,
 
-            p95_db_time: db_time,
-            p95_view_time: view_time,
-            p95_total_time: total_time,
+          lazy_configurator
+          PulseToolbox.redis.multi do
+            {
+              max_db_time: db_time,
+              max_view_time: view_time,
+              max_total_time: total_time,
 
-            p99_db_time: db_time,
-            p99_view_time: view_time,
-            p99_total_time: total_time,
+              p95_db_time: db_time,
+              p95_view_time: view_time,
+              p95_total_time: total_time,
 
-            status_count: {payload[:status].to_s => 1},
-            status_total: 1,
+              p99_db_time: db_time,
+              p99_view_time: view_time,
+              p99_total_time: total_time,
 
-            action_count: {"#{payload[:controller]}##{payload[:action]}" => 1}
-          }.each_pair {|name, value| event(name, value)}
+              status_count: {payload[:status].to_s => 1},
+              status_total: 1,
+
+              action_count: {"#{payload[:controller]}##{payload[:action]}" => 1}
+            }.each_pair {|name, value| event(name, value)}
+          end
         end
         
         # Sends value to sensor by name
