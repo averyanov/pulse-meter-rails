@@ -86,6 +86,10 @@ Default layout can be easily exteneded in initializer by standart pulse-meter [D
       end
     end
 
+## Data isolation
+
+To avoid collisions between multiple rails applications with monitoring enabled use separate Redis DB for each of them
+
 ## Contributing
 
 1. Fork it
