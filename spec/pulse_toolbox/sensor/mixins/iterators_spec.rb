@@ -5,18 +5,18 @@ describe PulseToolbox::Sensor::Mixins::Iterators do
     extend PulseToolbox::Sensor::Mixins::Iterators
     class_attribute :sensors_config
     self.sensors_config = {
-      :g1 => {
-        :title => "G1",
-        :sensors => {
-          :s11 => "sensor11",
-          :s12 => "sensor12"
+      g1: {
+        title: "G1",
+        sensors: {
+          s11: "sensor11",
+          s12: "sensor12"
         }
       },
-      :g2 => {
-        :title => "G2",
-        :sensors => {
-          :s21 => "sensor21",
-          :s22 => "sensor22"
+      g2: {
+        title: "G2",
+        sensors: {
+          s21: "sensor21",
+          s22: "sensor22"
         }
       }
     }

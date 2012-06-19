@@ -36,9 +36,9 @@ module PulseToolbox
       PulseMeter.redis = redis
       @@pid = Process.pid
       @@redis_config = {
-        :host => redis.client.host,
-        :port => redis.client.port,
-        :db => redis.client.db
+        host: redis.client.host,
+        port: redis.client.port,
+        db: redis.client.db
       }
     end
 
@@ -49,9 +49,9 @@ module PulseToolbox
 
     def reconnect
       PulseMeter.redis = Redis.new(
-        :host => @@redis_config[:host],
-        :port => @@redis_config[:port],
-        :db => @@redis_config[:db]
+        host: @@redis_config[:host],
+        port: @@redis_config[:port],
+        db: @@redis_config[:db]
       )
     end
 

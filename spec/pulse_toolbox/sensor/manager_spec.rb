@@ -30,11 +30,11 @@ describe PulseToolbox::Sensor::Manager do
       described_class.create_sensors
       described_class.each_sensor {|s| s.should_receive(:event)}
       described_class.log_request(3, {
-        :view_runtime => 2,
-        :db_runtime => 1,
-        :action => "foo",
-        :controller => 'BarController',
-        :status => 200
+        view_runtime: 2,
+        db_runtime: 1,
+        action: "foo",
+        controller: 'BarController',
+        status: 200
       })
     end
   end
@@ -89,14 +89,14 @@ describe PulseToolbox::Sensor::Manager do
     let(:name) {:new_sensor}
     let(:options) {
       {
-        :sensor_type => 'timelined/max',
-        :color => '#0000FF',
-        :args => {
-          :ttl => 10.days,
-          :interval => 10.minutes,
-          :raw_data_ttl => 10.hours,
-          :reduce_delay => 20.minutes,
-          :annotation => "Annotation"
+        sensor_type: 'timelined/max',
+        color: '#0000FF',
+        args: {
+          ttl: 10.days,
+          interval: 10.minutes,
+          raw_data_ttl: 10.hours,
+          reduce_delay: 20.minutes,
+          annotation: "Annotation"
         }
       }
     }

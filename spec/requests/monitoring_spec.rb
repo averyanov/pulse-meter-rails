@@ -14,11 +14,11 @@ describe "/monitoring/pages/:id/widgets" do
   before(:each) do
     PulseToolbox::Sensor::Manager.create_sensors
     PulseMeter::Sensor::Timelined::Counter.new(:custom_sensor,
-      :ttl => 1.hour,
-      :interval => 1.minute,
-      :raw_data_ttl => 10.minutes,
-      :reduce_delay => 2.minutes,
-      :annotation => "custom_sensor"
+      ttl: 1.hour,
+      interval: 1.minute,
+      raw_data_ttl: 10.minutes,
+      reduce_delay: 2.minutes,
+      annotation: "custom_sensor"
     )
   end
 
@@ -45,11 +45,11 @@ describe "/monitoring/pages/:id/widgets" do
 
   it "contains all sensors from PulseToolbox::Sensor::Manager config" do
     PulseToolbox::Sensor::Manager.log_request(3, {
-      :view_runtime => 2,
-      :db_runtime => 1,
-      :action => "foo",
-      :controller => 'BarController',
-      :status => 200,
+      view_runtime: 2,
+      db_runtime: 1,
+      action: "foo",
+      controller: 'BarController',
+      status: 200,
     })
 
     annotations = PulseToolbox::Sensor::Manager.sensors.reject{|s|

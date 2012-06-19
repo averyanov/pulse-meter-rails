@@ -47,7 +47,7 @@ describe PulseToolbox do
 
   describe ".reconnect" do
     before do
-      described_class.redis = Redis.new :db => 2
+      described_class.redis = Redis.new(db: 2)
     end
 
     it "recreates redis client" do
