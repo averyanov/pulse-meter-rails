@@ -25,6 +25,10 @@ Or install it yourself as:
 
     $ gem install pulse-meter-rails
 
+### Data compression
+
+Don't forget to schedule regular [pulse reduce](https://github.com/savonarola/pulse-meter#command-line-interface) commant to keep redis data small and make visualization fast
+
 ## Usage
 
 Create an initializer with the following config
