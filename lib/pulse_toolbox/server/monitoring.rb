@@ -10,25 +10,9 @@ module PulseToolbox::Server
       PulseToolbox::Sensor::Manager.layout do |l|
         l.use_utc false
 
-        l.outlier_color '#FF0000'
-
-        l.highchart_options({
-          x_axis: {
-            min_padding: 0,
-            max_padding: 0
-          }
-        })
-
         l.page "Requests" do |p|
-
-          p.highchart_options({
-            chart: {
-              height: 300
-            }
-          })
-          
           PulseToolbox::Sensor::Manager.each_group_with_title do |group, title, values_label|
-            p.spline title do |w|
+            p.line title do |w|
               PulseToolbox::Sensor::Manager.each_sensor_in_group(group) do |s|
                 w.sensor s.name, :color => s.color
               end
@@ -41,12 +25,6 @@ module PulseToolbox::Server
               w.width 5
             end
           end
-
-          p.highchart_options({
-            tooltip: {
-              value_decimals: 0
-            }
-          })
         end
       end.to_layout
     end

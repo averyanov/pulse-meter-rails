@@ -9,7 +9,7 @@ PulseMeter::Sensor::Timelined::Counter.new(:custom_sensor,
 
 PulseToolbox::Sensor::Manager.layout do |l|
   l.page "Custom" do |p|
-    p.spline "Custom sensor" do |w|
+    p.line "Custom sensor" do |w|
       w.sensor :custom_sensor, color: "#0000FF"
 
       w.timespan 60 * 60 * 3

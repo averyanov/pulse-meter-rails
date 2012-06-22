@@ -30,9 +30,7 @@ describe "/monitoring/pages/:id/widgets" do
   def sensor_names_on_tab(tab_id)
     found_annotations = []
     widgets_on_tab(tab_id).each do |w|
-      w["series"].each do |s|
-        found_annotations << s["name"]
-      end
+      found_annotations += w["series"]["titles"]
     end
     found_annotations
   end

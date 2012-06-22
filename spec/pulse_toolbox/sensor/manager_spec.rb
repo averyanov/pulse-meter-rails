@@ -93,7 +93,7 @@ describe PulseToolbox::Sensor::Manager do
         color: '#0000FF',
         args: {
           ttl: 10.days,
-          interval: 10.minutes,
+          interval: 1.minute,
           raw_data_ttl: 10.hours,
           reduce_delay: 20.minutes,
           annotation: "Annotation"
