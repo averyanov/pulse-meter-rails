@@ -26,7 +26,7 @@ module PulseToolbox::Server
             end
           end
         end
-      end.to_layout
+      end.to_data
     end
   end
 end
