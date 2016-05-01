@@ -1,3 +1,6 @@
+**This gem is deprecated. For PulseMeter and Rails integration see https://github.com/savonarola/pulse-meter#rails-app-integration**
+
+
 [![Build Status](https://secure.travis-ci.org/averyanov/pulse-meter-rails.png)](http://travis-ci.org/averyanov/pulse-meter-rails)
 
 # PulseToolbox
